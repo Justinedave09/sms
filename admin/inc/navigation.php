@@ -31,7 +31,7 @@
                         </p>
                       </a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                       <a href="<?php echo base_url ?>admin/?page=purchase_order" class="nav-link nav-purchase_order">
                         <i class="nav-icon fas fa-th-list"></i>
                         <p>
@@ -62,7 +62,7 @@
                           Return List
                         </p>
                       </a>
-                    </li> -->
+                    </li>
                     <li class="nav-item">
                       <a href="<?php echo base_url ?>admin/?page=stocks" class="nav-link nav-stocks">
                         <i class="nav-icon fas fa-table"></i>
@@ -71,24 +71,24 @@
                         </p>
                       </a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                       <a href="<?php echo base_url ?>admin/?page=sales" class="nav-link nav-sales">
                         <i class="nav-icon fas fa-file-invoice-dollar"></i>
                         <p>
                           Sale List
                         </p>
                       </a>
-                    </li> -->
+                    </li>
                     <?php if($_settings->userdata('type') == 1): ?>
                     <li class="nav-header">Maintenance</li>
-                    <!-- <li class="nav-item dropdown">
+                    <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=maintenance/supplier" class="nav-link nav-maintenance_supplier">
                         <i class="nav-icon fas fa-truck-loading"></i>
                         <p>
                           Supplier List
                         </p>
                       </a>
-                    </li> -->
+                    </li>
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=maintenance/item" class="nav-link nav-maintenance_item">
                         <i class="nav-icon fas fa-boxes"></i>

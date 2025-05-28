@@ -1,5 +1,7 @@
 <?php
 require_once('../config.php');
+require_once('DBConnection.php');
+
 Class Master extends DBConnection {
 	private $settings;
 	public function __construct(){
@@ -20,6 +22,34 @@ Class Master extends DBConnection {
 			exit;
 		}
 	}
+function add_stock(){
+	extract($_POST);
+	$item_name = isset($_POST['item_name']) ? $_POST['item_name'] : '';
+	$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
+	$price = isset($_POST['price']) ? (float)$_POST['price'] : 0;
+	$supplier_id = isset($_POST['supplier_id']) ? (int)$_POST['supplier_id'] : 0;
+	$unit = isset($_POST['unit']) ? $_POST['unit'] : '';
+
+	$stmt = $this->conn->prepare("INSERT INTO stock_list (item_id, quantity, price, supplier_id, unit) VALUES (?, ?, ?, ?, ?)");
+	if(!$stmt){
+		$resp['status'] = 'failed';
+		$resp['error'] = $this->conn->error;
+		return json_encode($resp);
+	}
+	$stmt->bind_param("sidis", $item_name, $quantity, $price, $supplier_id, $unit);
+
+	if ($stmt->execute()) {
+		$resp['status'] = 'success';
+	} else {
+		$resp['status'] = 'failed';
+		$resp['error'] = $stmt->error;
+	}
+
+	$stmt->close();
+	return json_encode($resp);
+}
+
+
 	function save_supplier(){
 		extract($_POST);
 		$data = "";
@@ -83,7 +113,7 @@ Class Master extends DBConnection {
 				$data .= " `{$k}`='{$v}' ";
 			}
 		}
-		$check = $this->conn->query("SELECT * FROM `item_list` where `name` = '{$name}' and `supplier_id` = '{$supplier_id}' ".(!empty($id) ? " and id != {$id} " : "")." ")->num_rows;
+		$check = $this->conn->query("SELECT * FROM `item_list` where `name` = '{$name}' and `supplier_id` = '".(isset($supplier_id) ? $supplier_id : null)."' ".(!empty($id) ? " and id != {$id} " : "")." ")->num_rows;
 		if($this->capture_err())
 			return $this->capture_err();
 		if($check > 0){
@@ -606,6 +636,9 @@ $sysset = new SystemSettings();
 switch ($action) {
 	case 'save_supplier':
 		echo $Master->save_supplier();
+	break;
+		case 'add_stock':
+		echo $Master->add_stock();
 	break;
 	case 'delete_supplier':
 		echo $Master->delete_supplier();

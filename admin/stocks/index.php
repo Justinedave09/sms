@@ -1,45 +1,63 @@
 <div class="card card-outline card-primary">
 	<div class="card-header">
 		<h3 class="card-title">List of Stocks</h3>
-        <!-- <div class="card-tools">
-			<a href="<?php echo base_url ?>admin/?page=purchase_order/manage_po" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
-		</div> -->
+        <div class="card-tools">
+			<a href="<?php echo base_url ?>admin/?page=stocks/add_stock" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
+		</div>
 	</div>
 	<div class="card-body">
 		<div class="container-fluid">
         <div class="container-fluid">
-			<table class="table table-bordered table-stripped">
+			<table class="table table-bordered table-sm table-stripped" >
                     <colgroup>
-                        <col width="5%">
-                        <col width="20%">
-                        <col width="20%">
-                        <col width="40%">
+                        <col width="2%">
                         <col width="15%">
+                        <col width="15%">
+                        <col width="25%">
+                        <col width="15%">
+						<col width="8%">
+                        <col width="13%">
+                        <col width="15%">
+						<col width="15%">
                     </colgroup>
-                    <thead>
+                    <thead class="thead-gray">
                         <tr>
                             <th>#</th>
                             <th>Item Name</th>
                             <th>Supplier</th>
                             <th>Description</th>
                             <th>Available Stocks</th>
+							 <th>Units</th>
+							 <th>Price Per Unit</th>
+							 <th>Overall Price</th>
+							 <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
                         $i = 1;
-                        $qry = $conn->query("SELECT i.*,s.name as supplier FROM `item_list` i inner join supplier_list s on i.supplier_id = s.id order by `name` desc");
-                        while($row = $qry->fetch_assoc()):
-                            $in = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 1")->fetch_array()['total'];
-                            $out = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 2")->fetch_array()['total'];
-                            $row['available'] = $in - $out;
+						$qry = $conn->query("SELECT
+						 *, item_list.name as ItemName, item_list.description as description, supplier_list.name as supplierName
+						 FROM stock_list LEFT JOIN item_list ON item_list.id = stock_list.item_id LEFT JOIN supplier_list ON supplier_list.id = stock_list.supplier_id ORDER BY item_list.name ASC");
+						while($row = $qry->fetch_assoc()):
+                            // $in = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 1")->fetch_array()['total'];
+                            // $out = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 2")->fetch_array()['total'];
+                            // $row['available'] = $in - $out;
                         ?>
                             <tr>
                                 <td class="text-center"><?php echo $i++; ?></td>
-                                <td><?php echo $row['name'] ?></td>
-                                <td><?php echo $row['supplier'] ?></td>
+                                <td><?php echo $row['ItemName'] ?></td>
+                                <td><?php echo $row['supplierName'] ?></td>
                                 <td><?php echo $row['description'] ?></td>
-                                <td class="text-right"><?php echo number_format($row['available']) ?></td>
+                                <td ><?php echo number_format($row['quantity']) ?></td>
+								<td><?php echo $row['unit']?></td>
+								<td><?php echo number_format($row['price'])?></td>
+								<td><?php echo number_format($row['quantity'] * $row['price'])?></td>
+								<td>
+									<a href="<?php echo base_url ?>admin/?page=stocks/add_stock&id=<?php echo $row['id'] ?>" class="btn btn-sm btn-primary" title="Edit">
+										<span class="fas fa-edit"></span>
+									</a>
+								</td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
