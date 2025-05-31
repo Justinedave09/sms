@@ -54,4 +54,28 @@
     </script>
     <script src="<?php echo base_url ?>dist/js/script.js"></script>
 
+  <?php 
+  
+  if(isset($_SESSION['system_info']['type']) && $_SESSION['system_info']['type'] != 1){
+    if(
+      isset($_GET['page']) && 
+      (
+        $_GET['page'] == 'maintenance/item' || 
+        $_GET['page'] == 'maintenance/category' || 
+        $_GET['page'] == 'maintenance/supplier' || 
+        $_GET['page'] == 'system_info'
+      
+      )
+    ){
+      echo '<script>window.location.href="/sms/admin/?page=403";</script>';
+    }
+  }
+
+  
+
+
+  
+  ?>
+
+
   </head>

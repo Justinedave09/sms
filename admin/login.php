@@ -3,16 +3,27 @@
 <html lang="en">
 <?php require_once('inc/header.php') ?>
 <body class="hold-transition login-page dark-mode">
-<script>
-  start_loader()
-</script>
+<script>start_loader()</script>
+
+<!-- 🌟 Particle Container -->
+<div id="particles-js"></div>
 
 <style>
+  #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    background: transparent;
+  }
+
   body {
-    background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
-    background-size: cover;
+    /* background-image: url("<?php //echo validate_image($_settings->info('cover')) ?>"); */
+    /* background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
     backdrop-filter: brightness(0.5);
     display: flex;
     justify-content: center;
@@ -20,10 +31,16 @@
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .login-title, .login-box {
+    position: relative;
+    z-index: 2;
   }
 
   .login-title {
-    /* font-size: 2.75rem; */
     color: #64b5f6;
     text-shadow: 2px 2px rgba(0, 0, 0, 0.6);
     margin-bottom: 2rem;
@@ -81,7 +98,7 @@
   }
 
   .btn-primary {
-    background-color: #2196f3;
+    /* background-color: #2196f3; */
     border: none;
     border-radius: 50px;
     padding: 0.6rem;
@@ -93,7 +110,7 @@
   }
 </style>
 
-<h2 class="login-title">🐾 <?php echo $_settings->info('name') ?></b></h2>
+<h2 class="login-title">🐾 <?php echo $_settings->info('name') ?></h2>
 
 <div class="login-box">
   <div class="card card-outline card-primary">
@@ -129,6 +146,67 @@
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="dist/js/adminlte.min.js"></script>
+
+<!-- Particles.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<!-- Particles Config -->
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": {
+        "value": 50,
+        "density": {
+          "enable": true,
+          "value_area": 1000
+        }
+      },
+      "shape": {
+        "type": "image",
+        "image": {
+          "src": "../uploads/logo-1746087088.png", // <-- Make sure this file exists
+          "width": 100,
+          "height": 100
+        }
+      },
+      "opacity": {
+        "value": 0.6
+      },
+      "size": {
+        "value": 30,
+        "random": true
+      },
+      "move": {
+        "enable": true,
+        "speed": 1.0,
+        "out_mode": "inside",
+        "bounce": true,
+      }
+    },
+    "interactivity": {
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "repulse"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        }
+      },
+      "modes": {
+        "repulse": {
+          "distance": 100
+        },
+        "push": {
+          "particles_nb": 3
+        }
+      }
+    },
+    "retina_detect": true
+  });
+</script>
+
 <script>
   $(document).ready(function () {
     end_loader();
