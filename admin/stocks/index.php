@@ -1,6 +1,6 @@
 <div class="card card-outline card-primary">
 	<div class="card-header">
-		<h3 class="card-title">List of Stocks <?php echo var_dump($_SESSION)?></h3>
+		<h3 class="card-title">List of Stocks <?php //echo var_dump($_SESSION)?></h3>
         <div class="card-tools">
 			<a href="<?php echo base_url ?>admin/?page=stocks/add_stock" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
 		</div>

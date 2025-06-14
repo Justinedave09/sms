@@ -12,15 +12,15 @@
   }
 </style>
 <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-dark border border-light border-top-0  border-left-0 border-right-0 navbar-light text-sm bg-lightblue">
+      <nav class="main-header navbar navbar-expand navbar-white border border-light border-top-0 border-left-0 border-right-0 navbar-light text-sm bg-white">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
           <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
-          <li class="nav-item d-none d-sm-inline-block">
+          <!-- <li class="nav-item d-none d-sm-inline-block">
             <a href="<?php echo base_url ?>" class="nav-link"><?php echo (!isMobileDevice()) ? $_settings->info('name'):$_settings->info('short_name'); ?> - Admin</a>
-          </li>
+          </li> -->
         </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
@@ -44,13 +44,15 @@
                 </div>
               </form>
             </div>
-          </li> -->
-          <!-- Messages Dropdown Menu -->
+          </li> 
+           Messages Dropdown Menu -->
           <li class="nav-item">
             <div class="btn-group nav-link">
-                  <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                    <span><img src="<?php echo validate_image($_settings->userdata('avatar')) ?>" class="img-circle elevation-2 user-img" alt="User Image"></span>
-                    <span class="ml-3"><?php echo ucwords($_settings->userdata('firstname').' '.$_settings->userdata('lastname')) ?></span>
+                    <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon" data-toggle="dropdown" style="border: 1px solid #000;">
+                    <span>
+                      <img src="<?php echo validate_image($_settings->userdata('avatar')) ?>" class="img-circle elevation-2 user-img" alt="User Image" style="border: 1px solid #000;">
+                    </span>
+                    <span class="ml-3" ><?php echo ucwords($_settings->userdata('firstname').' '.$_settings->userdata('lastname')) ?></span>
                     <span class="sr-only">Toggle Dropdown</span>
                   </button>
                   <div class="dropdown-menu" role="menu">

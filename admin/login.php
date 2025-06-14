@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('inc/header.php') ?>
-<body class="hold-transition login-page dark-mode">
+<body class="hold-transition login-page dark-mode" style="background: #111; color: #fff;">
 <script>start_loader()</script>
 
 <!-- 🌟 Particle Container -->
@@ -20,11 +20,7 @@
   }
 
   body {
-    /* background-image: url("<?php //echo validate_image($_settings->info('cover')) ?>"); */
-    /* background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat; */
-    backdrop-filter: brightness(0.5);
+    backdrop-filter: brightness(0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,6 +29,9 @@
     margin: 0;
     position: relative;
     z-index: 1;
+    background: #111;
+    color: #fff;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   }
 
   .login-title, .login-box {
@@ -41,10 +40,13 @@
   }
 
   .login-title {
-    color: #64b5f6;
-    text-shadow: 2px 2px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
     margin-bottom: 2rem;
     text-align: center;
+    font-size: 2.2rem;
+    text-shadow: 0 2px 16px #000;
   }
 
   .login-box {
@@ -53,60 +55,82 @@
   }
 
   .card-primary.card-outline {
-    border-top: 5px solid #42a5f5;
-    border-radius: 1rem;
-    background: rgba(0, 0, 50, 0.85);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    border-top: 4px solid #fff;
+    border-radius: 1.2rem;
+    background: rgba(20, 20, 20, 0.98);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    border: 1px solid #222;
   }
 
   .card-header img {
-    border: 3px solid #90caf9;
-    background-color: #fff;
+    border: 2px solid #fff;
+    background-color: #222;
     padding: 5px;
+    box-shadow: 0 2px 8px #000;
   }
 
   .card-header a {
-    color: #90caf9;
-    font-weight: bold;
-    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.4rem;
     text-decoration: none;
+    letter-spacing: 1px;
+    margin-top: 0.5rem;
+    display: inline-block;
   }
 
   .login-box-msg {
-    color: #bbdefb;
+    color: #bbb;
     font-style: italic;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
   }
 
   .form-control {
-    border-radius: 50px;
-    padding: 0.75rem 1rem;
-    background-color: #e3f2fd;
-    border: none;
-    color: #0d47a1;
+    border-radius: 40px;
+    padding: 0.8rem 1.2rem;
+    background-color: #181818;
+    border: 1px solid #333;
+    color: #fff;
+    font-size: 1.05rem;
+    transition: border 0.2s;
   }
 
   .form-control:focus {
-    border: 2px solid #64b5f6;
-    box-shadow: none;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #222;
+    background: #222;
+    color: #fff;
   }
 
   .input-group-text {
-    border-radius: 50px;
-    background-color: #42a5f5;
-    color: white;
+    border-radius: 40px;
+    background-color: #222;
+    color: #fff;
     border: none;
+    font-size: 1.1rem;
   }
 
   .btn-primary {
-    /* background-color: #2196f3; */
+    background: linear-gradient(90deg, #fff 0%, #222 100%);
+    color: #111;
     border: none;
-    border-radius: 50px;
-    padding: 0.6rem;
-    transition: background-color 0.3s ease;
+    border-radius: 40px;
+    padding: 0.7rem 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px #000;
   }
 
   .btn-primary:hover {
-    background-color: #1e88e5;
+    background: #fff;
+    color: #000;
+  }
+
+  /* Modern input group spacing */
+  .input-group {
+    margin-bottom: 1.3rem;
   }
 </style>
 
@@ -115,7 +139,7 @@
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <img src="../uploads/logo-1746087088.png" alt="Pet Logo" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+      <img src="../uploads/logo-1746087088.png" alt="Pet Logo" class="rounded-circle" style="width: 90px; height: 90px; object-fit: cover;">
       <a href="./" class="d-block mt-2">Login</a>
     </div>
     <div class="card-body">
@@ -155,31 +179,29 @@
   particlesJS("particles-js", {
     "particles": {
       "number": {
-        "value": 50,
+        "value": 40,
         "density": {
           "enable": true,
-          "value_area": 1000
+          "value_area": 900
         }
       },
       "shape": {
-        "type": "image",
-        "image": {
-          "src": "../uploads/logo-1746087088.png", // <-- Make sure this file exists
-          "width": 100,
-          "height": 100
-        }
+        "type": "circle",
+      },
+      "color": {
+        "value": "#fff"
       },
       "opacity": {
-        "value": 0.6
+        "value": 0.15
       },
       "size": {
-        "value": 30,
+        "value": 8,
         "random": true
       },
       "move": {
         "enable": true,
-        "speed": 1.0,
-        "out_mode": "inside",
+        "speed": 1.2,
+        "out_mode": "bounce",
         "bounce": true,
       }
     },
@@ -196,10 +218,10 @@
       },
       "modes": {
         "repulse": {
-          "distance": 100
+          "distance": 120
         },
         "push": {
-          "particles_nb": 3
+          "particles_nb": 2
         }
       }
     },
