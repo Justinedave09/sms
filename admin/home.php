@@ -92,7 +92,7 @@ h1, hr {
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-md-3">
+    <!-- <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box shadow">
             <i class="fas fa-exchange-alt dashboard"></i>
             <div class="info-box-content">
@@ -102,7 +102,7 @@ h1, hr {
                 </span>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box shadow">
           <i class="fas fa-undo dashboard"></i>

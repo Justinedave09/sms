@@ -36,7 +36,10 @@
                         $i = 1;
 						$qry = $conn->query("SELECT
 						 *, item_list.name as ItemName, item_list.description as description, supplier_list.name as supplierName
-						 FROM stock_list LEFT JOIN item_list ON item_list.id = stock_list.item_id LEFT JOIN supplier_list ON supplier_list.id = stock_list.supplier_id ORDER BY item_list.name ASC");
+						 FROM stock_list 
+						 LEFT JOIN item_list ON item_list.id = stock_list.item_id 
+						 LEFT JOIN supplier_list ON supplier_list.id = stock_list.supplier_id 
+						 ORDER BY stock_list.id DESC");
 						while($row = $qry->fetch_assoc()):
                             // $in = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 1")->fetch_array()['total'];
                             // $out = $conn->query("SELECT SUM(quantity) as total FROM stock_list where item_id = '{$row['id']}' and type = 2")->fetch_array()['total'];

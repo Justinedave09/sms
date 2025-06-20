@@ -80,7 +80,7 @@ if(isset($_GET['id'])){
                                 <select  id="item_id" class="custom-select select2">
                                     <option disabled selected></option>
                                     <?php foreach($data as $stock): ?>
-                                        <option value="<?php echo $stock['id'] .';'. $stock['description'] .';'. $stock['ItemName'].';'.$stock['quantity'].';'.$stock['cost'].';'.$stock['ItemID'] ?>"><strong>ITEM:</strong>   <?php echo $stock['ItemName'] ?>                                                                                              <strong>QTY:</strong>   <?php echo $stock['quantity'] ?></option>
+                                        <option value="<?php echo $stock['id'] .';'. $stock['description'] .';'. $stock['ItemName'].';'.$stock['quantity'].';'.$stock['cost'].';'.$stock['ItemID'].';'.$stock['unit'] ?>"><strong>ITEM:</strong>   <?php echo $stock['ItemName'] ?>                                                                                              <strong>QTY:</strong>   <?php echo $stock['quantity'] ?></option>
                                     <?php endforeach; ?>
                                 </select>
 
@@ -229,9 +229,11 @@ endif;
             var item_name = itemParts.length > 2 ? itemParts[2] : '';
             var quantity = itemParts.length > 3 ? itemParts[3] : '';
             var costs = itemParts.length > 4 ? itemParts[4] : '';
+            var unit = itemParts.length > 6 ? itemParts[6] : '';
+            // console.log(itemData )
        
             var qty = $('#qty').val() > 0 ? $('#qty').val() : 0;
-            var unit = $('#unit').val()
+            // var unit = $('#unit').val()
             var price = costs|| 0
             var total = parseFloat(qty) *parseFloat(price)
 
@@ -244,9 +246,9 @@ endif;
             var tr = $('#clone_list tr').clone()
 
 
-            if(quantity < qty){
+            if(parseFloat(qty) > parseFloat(quantity)){
                 alert_toast('Requested quantity exceeds available stock.','warning');
-                console.log(quantity);
+                console.log(qty + ' is greater than ' + quantity);
                 return false;
             }
 
