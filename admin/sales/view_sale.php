@@ -45,15 +45,15 @@ if($qry->num_rows >0){
                 <tbody>
                     <?php 
                     $total = 0;
-                    $qry = $conn->query("SELECT s.*,i.name,i.description FROM `stock_list` s inner join item_list i on s.item_id = i.id where s.id in ({$stock_ids})");
+                    $qry = $conn->query("SELECT view_sale.*,item_list.name as itemName ,item_list.description as description FROM view_sale LEFT JOIN item_list ON item_list.id = view_sale.item_id WHERE sale_id = '{$_GET['id']}'");
                     while($row = $qry->fetch_assoc()):
-                        $total += $row['total']
+                        $total += $row['total'];
                     ?>
                     <tr>
                         <td class="py-1 px-2 text-center"><?php echo number_format($row['quantity']) ?></td>
                         <td class="py-1 px-2 text-center"><?php echo ($row['unit']) ?></td>
                         <td class="py-1 px-2">
-                            <?php echo $row['name'] ?> <br>
+                            <?php echo $row['itemName'] ?> <br>
                             <?php echo $row['description'] ?>
                         </td>
                         <td class="py-1 px-2 text-right"><?php echo number_format($row['price']) ?></td>

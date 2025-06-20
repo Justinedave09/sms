@@ -41,14 +41,14 @@
 				<label for="content[about_us]" class="control-label">About Us</label>
 				<textarea type="text" class="form-control form-control-sm summernote" name="content[about_us]" id="about_us"><?php echo  is_file(base_app.'about_us.html') ? file_get_contents(base_app.'about_us.html') : '' ?></textarea>
 			</div> -->
-			<div class="form-group">
+			<!-- <div class="form-group">
 				<label for="" class="control-label">System Logo</label>
 				<div class="custom-file">
 	              <input type="file" class="custom-file-input rounded-circle" id="customFile" name="img" onchange="displayImg(this,$(this))">
 	              <label class="custom-file-label" for="customFile">Choose file</label>
 	            </div>
-			</div>
-			<div class="form-group d-flex justify-content-center">
+			</div> -->
+			<!-- <div class="form-group d-flex justify-content-center">
 				<img src="<?php echo validate_image($_settings->info('logo')) ?>" alt="" id="cimg" class="img-fluid img-thumbnail">
 			</div>
 			<div class="form-group">
@@ -60,7 +60,7 @@
 			</div>
 			<div class="form-group d-flex justify-content-center">
 				<img src="<?php echo validate_image($_settings->info('cover')) ?>" alt="" id="cimg2" class="img-fluid img-thumbnail">
-			</div>
+			</div> -->
 			</form>
 		</div>
 		<div class="card-footer">

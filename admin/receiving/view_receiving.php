@@ -70,7 +70,10 @@ if($qry->num_rows >0){
                 <tbody>
                     <?php 
                     $total = 0;
-                    $qry = $conn->query("SELECT s.*,i.name,i.description FROM `stock_list` s inner join item_list i on s.item_id = i.id where s.id in ({$stock_ids})");
+                    // Ensure $stock_ids is an array and sanitize each ID
+                    $stock_ids_array = array_map('intval', explode(',', $stock_ids));
+                    $stock_ids_str = implode(',', $stock_ids_array);
+                    $qry = $conn->query("SELECT s.*,i.name,i.description FROM `stock_list` s inner join item_list i on s.item_id = i.id where s.id in ({$stock_ids_str})");
                     while($row = $qry->fetch_assoc()):
                         $total += $row['total']
                     ?>

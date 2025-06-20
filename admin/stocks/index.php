@@ -1,9 +1,9 @@
 <div class="card card-outline card-primary">
 	<div class="card-header">
-		<h3 class="card-title">List of Stocks <?php //echo var_dump($_SESSION)?></h3>
-        <div class="card-tools">
+		<h3 class="card-title">List of Stocks <?php //echo $_SESSION['userdata']['username']?></h3>
+        <!-- <div class="card-tools">
 			<a href="<?php echo base_url ?>admin/?page=stocks/add_stock" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
-		</div>
+		</div> -->
 	</div>
 	<div class="card-body">
 		<div class="container-fluid">
@@ -12,25 +12,23 @@
                     <colgroup>
                         <col width="2%">
                         <col width="15%">
-                        <col width="15%">
                         <col width="25%">
                         <col width="15%">
 						<col width="8%">
                         <col width="13%">
                         <col width="15%">
-						<col width="15%">
+						<!-- <col width="15%"> -->
                     </colgroup>
                     <thead class="thead-gray">
                         <tr>
                             <th>#</th>
                             <th>Item Name</th>
-                            <th>Supplier</th>
                             <th>Description</th>
                             <th>Available Stocks</th>
 							 <th>Units</th>
 							 <th>Price Per Unit</th>
 							 <th>Overall Price</th>
-							 <th>Actions</th>
+							 <!-- <th>Actions</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -47,17 +45,16 @@
                             <tr>
                                 <td class="text-center"><?php echo $i++; ?></td>
                                 <td><?php echo $row['ItemName'] ?></td>
-                                <td><?php echo $row['supplierName'] ?></td>
                                 <td><?php echo $row['description'] ?></td>
                                 <td ><?php echo number_format($row['quantity']) ?></td>
 								<td><?php echo $row['unit']?></td>
 								<td><?php echo number_format($row['price'])?></td>
 								<td><?php echo number_format($row['quantity'] * $row['price'])?></td>
-								<td>
-									<a href="<?php echo base_url ?>admin/?page=stocks/add_stock&id=<?php echo $row['id'] ?>" class="btn btn-sm btn-primary" title="Edit">
+								<!-- <td>
+									<a href="<?php //echo base_url ?>admin/?page=stocks/add_stock&id=<?php// echo $row['id'] ?>" class="btn btn-sm btn-primary" title="Edit">
 										<span class="fas fa-edit"></span>
 									</a>
-								</td>
+								</td> -->
                             </tr>
                         <?php endwhile; ?>
                     </tbody>

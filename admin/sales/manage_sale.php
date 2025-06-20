@@ -48,29 +48,52 @@ if(isset($_GET['id'])){
                             <?php 
                                 $item_arr = array();
                                 $cost_arr = array();
-                                $item = $conn->query("SELECT * FROM `item_list` where status = 1 order by `name` asc");
-                                while($row=$item->fetch_assoc()):
-                                    $item_arr[$row['id']] = $row;
-                                    $cost_arr[$row['id']] = $row['cost'];
+                                $qry = $conn->query("SELECT 
+                                    stock_list.*, 
+                                    item_list.name as ItemName, 
+                                    item_list.id as ItemID, 
+                                    item_list.description as description, 
+                                    item_list.cost as cost, 
+                                    supplier_list.name as supplierName 
+                                    FROM stock_list 
+                                    LEFT JOIN item_list ON item_list.id = stock_list.item_id 
+                                    LEFT JOIN supplier_list ON supplier_list.id = stock_list.supplier_id 
+                                    WHERE item_list.status = 1 
+                                    ORDER BY item_list.name ASC");
+
+                                while($row = $qry->fetch_assoc()):
+                                    $data[] = $row;
+                             
                                 endwhile;
                             ?>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="item_id" class="control-label">Item</label>
+
+<?php 
+                            //     $qry = $conn->query("SELECT
+                            // *, item_list.name as ItemName, item_list.description as description, supplier_list.name as supplierName
+                            // FROM stock_list LEFT JOIN item_list ON item_list.id = stock_list.item_id LEFT JOIN supplier_list ON supplier_list.id = stock_list.supplier_id ORDER BY item_list.name ASC");
+?>
+
                                 <select  id="item_id" class="custom-select select2">
                                     <option disabled selected></option>
-                                    <?php foreach($item_arr as $k =>$v): ?>
-                                        <option value="<?php echo $k ?>"> <?php echo $v['name'] ?></option>
+                                    <?php foreach($data as $stock): ?>
+                                        <option value="<?php echo $stock['id'] .';'. $stock['description'] .';'. $stock['ItemName'].';'.$stock['quantity'].';'.$stock['cost'].';'.$stock['ItemID'] ?>"><strong>ITEM:</strong>   <?php echo $stock['ItemName'] ?>                                                                                              <strong>QTY:</strong>   <?php echo $stock['quantity'] ?></option>
                                     <?php endforeach; ?>
                                 </select>
+
+
+                                
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                             <div class="form-group">
                                 <label for="unit" class="control-label">Unit</label>
                                 <input type="text" class="form-control rounded-0" id="unit">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="qty" class="control-label">Qty</label>
@@ -82,9 +105,12 @@ if(isset($_GET['id'])){
                                 <button type="button" class="btn btn-flat btn-sm btn-primary" id="add_to_list">Add to List</button>
                             </div>
                         </div>
+                       <!-- <input type="hidden" id='itemID' name='itemID'> -->
+
                 </fieldset>
                 <hr>
                 <table class="table table-striped table-bordered" id="list">
+
                     <colgroup>
                         <col width="5%">
                         <col width="10%">
@@ -104,41 +130,35 @@ if(isset($_GET['id'])){
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
-                        $total = 0;
-                        if(isset($id)):
-                        $qry = $conn->query("SELECT s.*,i.name,i.description FROM `stock_list` s inner join item_list i on s.item_id = i.id where s.id in ({$stock_ids})");
-                        while($row = $qry->fetch_assoc()):
-                            $total += $row['total']
-                        ?>
-                        <tr>
-                            <td class="py-1 px-2 text-center">
-                                <button class="btn btn-outline-danger btn-sm rem_row" type="button"><i class="fa fa-times"></i></button>
-                            </td>
-                            <td class="py-1 px-2 text-center qty">
-                                <span class="visible"><?php echo number_format($row['quantity']); ?></span>
-                                <input type="hidden" name="item_id[]" value="<?php echo $row['item_id']; ?>">
-                                <input type="hidden" name="unit[]" value="<?php echo $row['unit']; ?>">
-                                <input type="hidden" name="qty[]" value="<?php echo $row['quantity']; ?>">
-                                <input type="hidden" name="price[]" value="<?php echo $row['price']; ?>">
-                                <input type="hidden" name="total[]" value="<?php echo $row['total']; ?>">
-                            </td>
-                            <td class="py-1 px-2 text-center unit">
-                            <?php echo $row['unit']; ?>
-                            </td>
-                            <td class="py-1 px-2 item">
-                            <?php echo $row['name']; ?> <br>
-                            <?php echo $row['description']; ?>
-                            </td>
-                            <td class="py-1 px-2 text-right cost">
-                            <?php echo number_format($row['price']); ?>
-                            </td>
-                            <td class="py-1 px-2 text-right total">
-                            <?php echo number_format($row['total']); ?>
-                            </td>
-                        </tr>
-                        <?php endwhile; ?>
-                        <?php endif; ?>
+                     <?php
+$total = 0;
+
+if (isset($id) && !empty($stock_ids)):
+
+    // Make sure $stock_ids is an array
+    if (is_array($stock_ids)) {
+        // Sanitize and convert to comma-separated string
+        $stock_ids_str = implode(",", array_map('intval', $stock_ids));
+    } else {
+        // fallback: single value (but still sanitize)
+        $stock_ids_str = intval($stock_ids);
+    }
+
+    $qry = $conn->query("SELECT s.*, i.name, i.description 
+                         FROM `stock_list` s 
+                         INNER JOIN item_list i ON s.item_id = i.id 
+                         WHERE s.id IN ($stock_ids_str)");
+
+    while ($row = $qry->fetch_assoc()):
+        $total += $row['total'];
+?>
+<!-- HTML output continues here -->
+<?php
+    endwhile;
+endif;
+?>
+
+
                     </tbody>
                     <tfoot>
                         <tr>
@@ -165,7 +185,10 @@ if(isset($_GET['id'])){
         <a class="btn btn-flat btn-dark" href="<?php echo base_url.'/admin?page=sale' ?>">Cancel</a>
     </div>
 </div>
+<!-- <input type="hidden" id='itemID' name='itemID'> -->
+
 <table id="clone_list" class="d-none">
+
     <tr>
         <td class="py-1 px-2 text-center">
             <button class="btn btn-outline-danger btn-sm rem_row" type="button"><i class="fa fa-times"></i></button>
@@ -189,8 +212,8 @@ if(isset($_GET['id'])){
     </tr>
 </table>
 <script>
-    var items = $.parseJSON('<?php echo json_encode($item_arr) ?>')
-    var costs = $.parseJSON('<?php echo json_encode($cost_arr) ?>')
+    // var items = $.parseJSON('<?php //echo json_encode($item_arr) ?>')
+    // var costs = $.parseJSON('<?php// echo json_encode($cost_arr) ?>')
     
     $(function(){
         $('.select2').select2({
@@ -198,15 +221,35 @@ if(isset($_GET['id'])){
             width:'resolve',
         })
         $('#add_to_list').click(function(){
-            var item = $('#item_id').val()
+            var itemData = $('#item_id').val();
+            var itemParts = itemData ? itemData.split(';') : [];     
+            var itemID = itemParts.length > 5 ? itemParts[5] : '';
+            var item = itemParts.length > 0 ? itemParts[0] : '' + ';' + itemID;
+            var item_description = itemParts.length > 1 ? itemParts[1] : '';
+            var item_name = itemParts.length > 2 ? itemParts[2] : '';
+            var quantity = itemParts.length > 3 ? itemParts[3] : '';
+            var costs = itemParts.length > 4 ? itemParts[4] : '';
+       
             var qty = $('#qty').val() > 0 ? $('#qty').val() : 0;
             var unit = $('#unit').val()
-            var price = costs[item] || 0
+            var price = costs|| 0
             var total = parseFloat(qty) *parseFloat(price)
+
+
+
+
             // console.log(supplier,item)
-            var item_name = items[item].name || 'N/A';
-            var item_description = items[item].description || 'N/A';
+            // var item_name = items[item].name || 'N/A';
+            // var item_description = items[item].description || 'N/A';
             var tr = $('#clone_list tr').clone()
+
+
+            if(quantity < qty){
+                alert_toast('Requested quantity exceeds available stock.','warning');
+                console.log(quantity);
+                return false;
+            }
+
             if(item == '' || qty == '' || unit == '' ){
                 alert_toast('Form Item textfields are required.','warning');
                 return false;
@@ -226,9 +269,11 @@ if(isset($_GET['id'])){
             tr.find('.item').html(item_name+'<br/>'+item_description)
             tr.find('.cost').text(parseFloat(price).toLocaleString('en-US'))
             tr.find('.total').text(parseFloat(total).toLocaleString('en-US'))
+
             $('table#list tbody').append(tr)
             calc()
             $('#item_id').val('').trigger('change')
+            $('#itemID').val(itemID)
             $('#qty').val('')
             $('#unit').val('')
             tr.find('.rem_row').click(function(){

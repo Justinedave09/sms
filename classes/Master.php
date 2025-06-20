@@ -22,32 +22,52 @@ Class Master extends DBConnection {
 			exit;
 		}
 	}
-function add_stock(){
-	extract($_POST);
-	$item_name = isset($_POST['item_name']) ? $_POST['item_name'] : '';
-	$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
-	$price = isset($_POST['price']) ? (float)$_POST['price'] : 0;
-	$supplier_id = isset($_POST['supplier_id']) ? (int)$_POST['supplier_id'] : 0;
-	$unit = isset($_POST['unit']) ? $_POST['unit'] : '';
+// function add_stock(){
+// 	extract($_POST);
+// 	$item_name = isset($_POST['item_name']) ? $_POST['item_name'] : '';
+// 	$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
+// 	$price = isset($_POST['price']) ? (float)$_POST['price'] : 0;
+// 	$supplier_id = isset($_POST['supplier_id']) ? (int)$_POST['supplier_id'] : 0;
+// 	$unit = isset($_POST['unit']) ? $_POST['unit'] : '';
 
-	$stmt = $this->conn->prepare("INSERT INTO stock_list (item_id, quantity, price, supplier_id, unit) VALUES (?, ?, ?, ?, ?)");
-	if(!$stmt){
-		$resp['status'] = 'failed';
-		$resp['error'] = $this->conn->error;
-		return json_encode($resp);
-	}
-	$stmt->bind_param("sidis", $item_name, $quantity, $price, $supplier_id, $unit);
+// 	$stmt = $this->conn->prepare("INSERT INTO stock_list (item_id, quantity, price, supplier_id, unit) VALUES (?, ?, ?, ?, ?)");
+// 	if(!$stmt){
+// 		$resp['status'] = 'failed';
+// 		$resp['error'] = $this->conn->error;
+// 		return json_encode($resp);
+// 	}
+// 	$stmt->bind_param("sidis", $item_name, $quantity, $price, $supplier_id, $unit);
 
-	if ($stmt->execute()) {
-		$resp['status'] = 'success';
-	} else {
-		$resp['status'] = 'failed';
-		$resp['error'] = $stmt->error;
-	}
+// 	if ($stmt->execute()) {
+// 		$resp['status'] = 'success';
+// 	} else {
+// 		$resp['status'] = 'failed';
+// 		$resp['error'] = $stmt->error;
+// 	}
 
-	$stmt->close();
-	return json_encode($resp);
+// 	$stmt->close();
+// 	return json_encode($resp);
+// }
+	
+
+function logHistory($message) {
+    // Define the log file path
+    $logFile = '../activity_logs.txt';
+
+    // Format timestamp
+    $timestamp = date('Y-m-d H:i:s');
+
+    // Get user from session, fallback to 'Guest' if not logged in
+    $user = isset($_SESSION['userdata']['username']) ? $_SESSION['userdata']['username'] : 'Guest';
+
+    // Format log entry
+    $logEntry = "[$timestamp] [$user] $message" . PHP_EOL;
+
+    // Append to log file
+    file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
 }
+
+
 
 
 	function save_supplier(){
@@ -79,6 +99,8 @@ function add_stock(){
 			$resp['status'] = 'success';
 			if(empty($id)){
 				$res['msg'] = "New Supplier successfully saved.";
+				
+				$this->logHistory("New Supplier added: {$name}");
 				$id = $this->conn->insert_id;
 			}else{
 				$res['msg'] = "Supplier successfully updated.";
@@ -96,6 +118,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"Supplier successfully deleted.");
+			$this->logHistory("Supplier deleted: ID {$id}");
 		}else{
 			$resp['status'] = 'failed';
 			$resp['error'] = $this->conn->error;
@@ -131,10 +154,12 @@ function add_stock(){
 		}
 		if($save){
 			$resp['status'] = 'success';
-			if(empty($id))
+			if(empty($id)){
 				$this->settings->set_flashdata('success',"New Item successfully saved.");
-			else
+				$this->logHistory("New Item added: {$name}");
+			}else{
 				$this->settings->set_flashdata('success',"Item successfully updated.");
+			}
 		}else{
 			$resp['status'] = 'failed';
 			$resp['err'] = $this->conn->error."[{$sql}]";
@@ -147,6 +172,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"Item  successfully deleted.");
+			$this->logHistory("Item deleted: ID {$id}");
 		}else{
 			$resp['status'] = 'failed';
 			$resp['error'] = $this->conn->error;
@@ -215,6 +241,7 @@ function add_stock(){
 		if($resp['status'] == 'success'){
 			if(empty($id)){
 				$this->settings->set_flashdata('success'," New Purchase Order was Successfully created.");
+				$this->logHistory("New Purchase Order created: {$po_code}");
 			}else{
 				$this->settings->set_flashdata('success'," Purchase Order's Details Successfully updated.");
 			}
@@ -229,6 +256,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"po's Details Successfully deleted.");
+			$this->logHistory("Purchase Order deleted: ID {$id}");
 			if($bo->num_rows > 0){
 				$bo_res = $bo->fetch_all(MYSQLI_ASSOC);
 				$r_ids = array_column($bo_res, 'receiving_id');
@@ -314,7 +342,9 @@ function add_stock(){
 			$stock_ids= array();
 			foreach($item_id as $k =>$v){
 				if(!empty($data)) $data .=", ";
-				$sql = "INSERT INTO stock_list (`item_id`,`quantity`,`price`,`unit`,`total`,`type`) VALUES ('{$v}','{$qty[$k]}','{$price[$k]}','{$unit[$k]}','{$total[$k]}','1')";
+				$sql = "INSERT INTO stock_list (`item_id`,`quantity`,`price`,`unit`,`total`,`type`) VALUES ('{$v}','{$qty[$k]}','{$price[$k]}','{$unit[$k]}','{$total[$k]}','1')
+				ON DUPLICATE KEY UPDATE 
+					quantity = quantity + VALUES(quantity)";
 				$this->conn->query($sql);
 				$stock_ids[] = $this->conn->insert_id;
 				if($qty[$k] < $oqty[$k]){
@@ -386,6 +416,12 @@ function add_stock(){
 		if($resp['status'] == 'success'){
 			if(empty($id)){
 				$this->settings->set_flashdata('success'," New Stock was Successfully received.");
+				$poCodeQuery = $this->conn->query("SELECT po_code FROM purchase_order_list WHERE id = '{$po_id}'");
+				if ($poCodeQuery && $poCodeQuery->num_rows > 0) {
+					$poCodeRow = $poCodeQuery->fetch_assoc();
+					$po_code = $poCodeRow['po_code'];
+				}
+				$this->logHistory("New Stock received: PO Code {$po_code}");
 			}else{
 				$this->settings->set_flashdata('success'," Received Stock's Details Successfully updated.");
 			}
@@ -406,6 +442,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"Received Order's Details Successfully deleted.");
+			$this->logHistory("Received Order deleted: ID {$id}");
 
 			if(isset($res)){
 				if($res['from_order'] == 1){
@@ -428,6 +465,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"po's Details Successfully deleted.");
+			$this->logHistory("Back Order deleted: ID {$id}");
 			$qry = $this->conn->query("SELECT `stock_ids` from  receiving_list where form_id='{$id}' and from_order = '2' ");
 			if($qry->num_rows > 0){
 				$res = $qry->fetch_array();
@@ -512,6 +550,7 @@ function add_stock(){
 		if($resp['status'] == 'success'){
 			if(empty($id)){
 				$this->settings->set_flashdata('success'," New Returned Item Record was Successfully created.");
+				$this->logHistory("New Returned Item Record created: {$return_code}");
 			}else{
 				$this->settings->set_flashdata('success'," Returned Item Record's Successfully updated.");
 			}
@@ -529,6 +568,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"Returned Item Record's Successfully deleted.");
+			$this->logHistory("Returned Item Record deleted: ID {$id}");
 			if(isset($res)){
 				$this->conn->query("DELETE FROM `stock_list` where id in ({$res['stock_ids']})");
 			}
@@ -568,6 +608,7 @@ function add_stock(){
 		}else{
 			$sql = "UPDATE `sales_list` set {$data} where id = '{$id}'";
 		}
+
 		$save = $this->conn->query($sql);
 		if($save){
 			$resp['status'] = 'success';
@@ -585,22 +626,56 @@ function add_stock(){
 					$this->conn->query("DELETE FROM `stock_list` where id in ({$res['stock_ids']}) ");
 				}
 			}
-			foreach($item_id as $k =>$v){
-				$sql = "INSERT INTO `stock_list` set item_id='{$v}', `quantity` = '{$qty[$k]}', `unit` = '{$unit[$k]}', `price` = '{$price[$k]}', `total` = '{$total[$k]}', `type` = 2 ";
-				$save = $this->conn->query($sql);
-				if($save){
-					$sids[] = $this->conn->insert_id;
-				}
-			}
+$sids = [];
+
+foreach ($item_id as $k => $v) {
+    $itemId = intval($v);
+    $quantity = floatval($qty[$k]);
+    $unit = $this->conn->real_escape_string($unit[$k]);
+    $price = floatval($price[$k]);
+    $total = floatval($total[$k]);
+
+    // Check if item exists
+	$itemQuery = $this->conn->query("SELECT item_id,quantity FROM stock_list WHERE id = $itemId");
+	if ($itemQuery->num_rows == 0) {
+		$resp['status'] = 'failed';
+		$resp['msg'] = "Item with ID $itemId does not exist.";
+		return json_encode($resp);
+	}
+
+	// Fetch item row
+	$itemRows = $itemQuery->fetch_array();
+	$itemRow = $itemRows['item_id'];
+	$currQuantity = floatval($itemRows['quantity']);
+
+	$lastQuantity = $currQuantity - $quantity;
+	// Update stock - subtract quantity
+	$updateStock = "UPDATE `stock_list` SET quantity = $lastQuantity WHERE id = $itemId";
+	$saveStock = $this->conn->query($updateStock);
+
+    // Insert view_sale record
+    $viewSale = "INSERT INTO `view_sale` (item_id, quantity, unit, price, total, sale_id)
+                 VALUES ($itemRow, $quantity, '$unit', $price, $total, $sale_id)";
+    $saveViewSale = $this->conn->query($viewSale);
+
+    // Track item if successful
+    if ($saveStock && $saveViewSale) {
+        $sids[] = $itemId;
+    }
+}
+
+
 			$sids = implode(',',$sids);
 			$this->conn->query("UPDATE `sales_list` set stock_ids = '{$sids}' where id = '{$sale_id}'");
 		}else{
+			var_dump($saleID);
 			$resp['status'] = 'failed';
 			$resp['msg'] = 'An error occured. Error: '.$this->conn->error;
 		}
 		if($resp['status'] == 'success'){
 			if(empty($id)){
 				$this->settings->set_flashdata('success'," New Sales Record was Successfully created.");
+				$this->logHistory("New Sales Record created: {$sales_code}");
 			}else{
 				$this->settings->set_flashdata('success'," Sales Record's Successfully updated.");
 			}
@@ -618,6 +693,7 @@ function add_stock(){
 		if($del){
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success',"Sales Record's Successfully deleted.");
+			$this->logHistory("Sales Record deleted: ID {$id}");
 			if(isset($res)){
 				$this->conn->query("DELETE FROM `stock_list` where id in ({$res['stock_ids']})");
 			}

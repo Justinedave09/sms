@@ -59,7 +59,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4 sidebar-no-expand">
   <!-- Brand Logo -->
   <a href="<?php echo base_url ?>admin" class="brand-link bg-primary text-sm">
-    <img src="<?php echo validate_image($_settings->info('logo'))?>" alt="Store Logo" class="brand-image img-circle elevation-3 bg-black" style="width: 1.8rem;height: 1.8rem;max-height: unset">
+    <img src="../uploads/logo-1746087088.png" alt="Store Logo" class="brand-image img-circle elevation-3 bg-black" style="width: 1.8rem;height: 1.8rem;max-height: unset; border: 2px solid #fff;">
     <span class="brand-text font-weight-light"><?php echo $_settings->info('short_name') ?></span>
   </a>
   <!-- Sidebar -->
@@ -97,12 +97,12 @@
                   <p>Receiving</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a href="<?php echo base_url ?>admin/?page=back_order" class="nav-link nav-back_order">
                   <i class="nav-icon fas fa-exchange-alt"></i>
                   <p>Back Order</p>
                 </a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a href="<?php echo base_url ?>admin/?page=return" class="nav-link nav-return">
                   <i class="nav-icon fas fa-undo"></i>
@@ -145,6 +145,12 @@
                 <a href="<?php echo base_url ?>admin/?page=system_info" class="nav-link nav-system_info">
                   <i class="nav-icon fas fa-cogs"></i>
                   <p>Settings</p>
+                </a>
+              </li>
+               <li class="nav-item dropdown">
+                <a href="<?php echo base_url ?>admin/?page=activity_logs" class="nav-link nav-system_info">
+                    <i class="nav-icon fas fa-clipboard-list"></i>
+                  <p>Activity Logs</p>
                 </a>
               </li>
               <?php endif; ?>
